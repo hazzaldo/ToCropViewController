@@ -28,7 +28,8 @@
 
 static const CGFloat kTOCropViewPadding = 14.0f;
 static const NSTimeInterval kTOCropTimerDuration = 0.8f;
-static const CGFloat kTOCropViewMinimumBoxSize = 42.0f;
+static const CGFloat kTOCropViewMinimumSize = 375.0f;
+static const CGFloat kTOCropViewMinimumBoxSize = 375.0f;
 static const CGFloat kTOCropViewCircularPathRadius = 300.0f;
 
 /* When the user taps down to resize the box, this state is used
@@ -320,8 +321,9 @@ typedef NS_ENUM(NSInteger, TOCropViewOverlayEdge) {
     CGSize scaledSize = (CGSize){floorf(imageSize.width * scale), floorf(imageSize.height * scale)};
     
     // Configure the scroll view
+    CGFloat maximumScale = imageSize.width / kTOCropViewMinimumSize;
     self.scrollView.minimumZoomScale = scale;
-    self.scrollView.maximumZoomScale = 15.0f;
+    self.scrollView.maximumZoomScale = maximumScale;
 
     //Set the crop box to the size we calculated and align in the middle of the screen
     CGRect frame = CGRectZero;
