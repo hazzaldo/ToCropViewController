@@ -321,7 +321,7 @@ typedef NS_ENUM(NSInteger, TOCropViewOverlayEdge) {
     CGSize scaledSize = (CGSize){floorf(imageSize.width * scale), floorf(imageSize.height * scale)};
     
     // Configure the scroll view
-    CGFloat maximumScale = imageSize.width / kTOCropViewMinimumSize;
+    CGFloat maximumScale = floor(imageSize.width / kTOCropViewMinimumSize);
     self.scrollView.minimumZoomScale = scale;
     self.scrollView.maximumZoomScale = maximumScale;
 
