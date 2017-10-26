@@ -73,6 +73,7 @@ typedef NS_ENUM(NSInteger, TOCropViewOverlayEdge) {
 @property (nonatomic, assign) CGPoint panOriginPoint;     /* The initial touch point of the pan gesture recognizer */
 @property (nonatomic, assign, readwrite) CGRect cropBoxFrame;  /* The frame, in relation to to this view where the grid, and crop container view are aligned */
 @property (nonatomic, strong) NSTimer *resetTimer;  /* The timer used to reset the view after the user stops interacting with it */
+@property (nonatomic, assign) CGFloat tOCropViewMinimumSizePerRes; /* The screen minimum size per screen resolution (Retina or Retina HD) */
 @property (nonatomic, assign) BOOL editing;         /* Used to denote the active state of the user manipulating the content */
 @property (nonatomic, assign) BOOL disableForgroundMatching; /* At times during animation, disable matching the forground image view to the background */
 
@@ -321,7 +322,15 @@ typedef NS_ENUM(NSInteger, TOCropViewOverlayEdge) {
     CGSize scaledSize = (CGSize){floorf(imageSize.width * scale), floorf(imageSize.height * scale)};
     
     // Configure the scroll view
-    CGFloat maximumScale = floor(imageSize.width / kTOCropViewMinimumSize);
+    if ([[UIScreen mainScreen] scale] == 2.0) {
+        self.tOCropViewMinimumSizePerRes = kTOCropViewMinimumSize / [[UIScreen mainScreen] scale];
+    }
+    
+    if ([[UIScreen mainScreen] scale] == 3.0) {
+        self.tOCropViewMinimumSizePerRes = kTOCropViewMinimumSize / [[UIScreen mainScreen] scale];
+    }
+    
+    CGFloat maximumScale = floor(imageSize.width / self.tOCropViewMinimumSizePerRes);
     self.scrollView.minimumZoomScale = scale;
     self.scrollView.maximumZoomScale = maximumScale;
 
