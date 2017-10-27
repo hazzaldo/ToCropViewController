@@ -108,20 +108,6 @@ typedef NS_ENUM(NSInteger, TOCropViewOverlayEdge) {
 @property (nonatomic, assign) NSInteger restoreAngle;
 @property (nonatomic, assign) CGRect    restoreImageCropFrame;
 
-/**
- Minimum width of cropped image in CGFloat to set the minimum in pixels. This is to limit the maximum zoom for the content to be cropped.
- We use the default constant value of kTOCropViewMinimumSize by default.
- Otherwise we can set this property instead to override kTOCropViewMinimumSize.
- */
-@property (nonatomic, assign, readwrite) CGFloat setTOCropViewMinimumWidthOfSize;
-
-/**
- Minimum cropping size of the box.
- We use the default constant value of kTOCropViewMinimumBoxSize by default.
- Otherwise we can set this property instead to override kTOCropViewMinimumBoxSize.
- */
-@property (nonatomic, assign, readwrite) CGFloat setTOCropViewMinimumBoxSize;
-
 - (void)setup;
 
 /* Image layout */
@@ -335,22 +321,20 @@ typedef NS_ENUM(NSInteger, TOCropViewOverlayEdge) {
     //Whether aspect ratio, or original, the final image size we'll base the rest of the calculations off
     CGSize scaledSize = (CGSize){floorf(imageSize.width * scale), floorf(imageSize.height * scale)};
     
-    if (self.setTOCropViewMinimumWidthOfSize > 0){
-        self.propTOCropViewMinimumWidthOfSize = self.setTOCropViewMinimumWidthOfSize;
-    } else {
+    //check if minimum width has been set else use default width value
+    if (self.propTOCropViewMinimumWidthOfSize <= 0) {
         self.propTOCropViewMinimumWidthOfSize = kTOCropViewMinimumWidthSize;
     }
     
-    if (self.setTOCropViewMinimumBoxSize > 0){
-        self.propTOCropViewMinimumBoxSize = self.setTOCropViewMinimumBoxSize;
-    } else {
+    //check if minimum crop box size has been set else use default value
+    if (self.propTOCropViewMinimumBoxSize <= 0) {
         self.propTOCropViewMinimumBoxSize = kTOCropViewMinimumBoxSize;
     }
     
-    // Configure the scroll view
+    //account for pixel density resolution of different iOS devices
     self.tOCropViewMinimumSizePerRes = self.propTOCropViewMinimumWidthOfSize / [[UIScreen mainScreen] scale];
-
     
+    // Configure the scroll view
     CGFloat maximumScale = floor(imageSize.width / self.tOCropViewMinimumSizePerRes);
     self.scrollView.minimumZoomScale = scale;
     self.scrollView.maximumZoomScale = maximumScale;

@@ -44,8 +44,6 @@ typedef NS_ENUM(NSInteger, TOCropViewCroppingStyle) {
  */
 @property (nonnull, nonatomic, strong, readonly) UIImage *image;
 
-
-
 /**
  The cropping style of the crop view (eg, rectangular or circular)
  */
@@ -121,15 +119,13 @@ typedef NS_ENUM(NSInteger, TOCropViewCroppingStyle) {
 
 /**
  Minimum width of cropped image in CGFloat to set the minimum in pixels. This is to limit the maximum zoom for the content to be cropped.
- We use this property to determine whether we're using the default constant value of kTOCropViewMinimumSize,
- otherwise we use the property setTOCropViewMinimumWidthOfSize if it's set.
+ We use this property only if it's set otherwise we use the default constant value of kTOCropViewMinimumSize.
  */
 @property (nonatomic, assign, readwrite) CGFloat propTOCropViewMinimumWidthOfSize;
 
 /**
  Minimum cropping size of the box.
- We use this property to determine whether we're using the default constant value of kTOCropViewMinimumBoxSize,
- otherwise we use the property setTOCropViewMinimumBoxSize if it's set.
+ We use this property only if it's set otherwise we use the default constant value of kTOCropViewMinimumBoxSize.
  */
 @property (nonatomic, assign, readwrite) CGFloat propTOCropViewMinimumBoxSize;
 

@@ -80,8 +80,8 @@ static const CGFloat kTOCropViewControllerTitleTopPadding = 14.0f;
 
 CGFloat titleLabelHeight;
 
-- (void) setTOCropViewMinimumWidthOfSize:(CGFloat) size {
-    self.cropViewMinimumWidthOfSize = size;
+- (void) setTOCropViewMinimumWidthOfSize:(CGFloat) width {
+    self.cropViewMinimumWidthOfSize = width;
 }
 
 - (void) setTOCropViewMinimumBoxSize:(CGFloat) size {
@@ -121,12 +121,14 @@ CGFloat titleLabelHeight;
 {
     [super viewDidLoad];
     BOOL circularMode = (self.croppingStyle == TOCropViewCroppingStyleCircular);
-
     self.cropView.frame = [self frameForCropViewWithVerticalLayout:self.verticalLayout];
     self.toolbar.frame = [self frameForToolBarWithVerticalLayout:self.verticalLayout];
-
+    
+    //set minimum width of image to be cropped
+    self.cropView.propTOCropViewMinimumWidthOfSize = self.cropViewMinimumWidthOfSize;
+    
+    //set minimum crop box size
     self.cropView.propTOCropViewMinimumBoxSize = self.cropViewMinimumBoxSize;
-    _cropView.propTOCropViewMinimumWidthOfSize = self.cropViewMinimumWidthOfSize;
     
     // Perform the initial set up after the initial frame is set
     [self.cropView performInitialSetup];
