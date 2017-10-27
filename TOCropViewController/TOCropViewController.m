@@ -54,6 +54,20 @@ static const CGFloat kTOCropViewControllerTitleTopPadding = 14.0f;
 /* Convenience method for checking vertical state */
 @property (nonatomic, readonly) BOOL verticalLayout;
 
+/**
+ Minimum width of cropped image in CGFloat to set the minimum in pixels. This is to limit the maximum zoom for the content to be cropped.
+ We use the default constant value of kTOCropViewMinimumSize by default.
+ Otherwise we can set this property instead to override kTOCropViewMinimumSize.
+ */
+@property (nonatomic, assign, readwrite) CGFloat cropViewMinimumWidthOfSize;
+
+/**
+ Minimum cropping size of the box.
+ We use the default constant value of kTOCropViewMinimumBoxSize by default.
+ Otherwise we can set this property instead to override kTOCropViewMinimumBoxSize.
+ */
+@property (nonatomic, assign, readwrite) CGFloat cropViewMinimumBoxSize;
+
 /* On iOS 7, the popover view controller that appears when tapping 'Done' */
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
@@ -65,6 +79,14 @@ static const CGFloat kTOCropViewControllerTitleTopPadding = 14.0f;
 @implementation TOCropViewController
 
 CGFloat titleLabelHeight;
+
+- (void) setTOCropViewMinimumWidthOfSize:(CGFloat) size {
+    self.cropViewMinimumWidthOfSize = size;
+}
+
+- (void) setTOCropViewMinimumBoxSize:(CGFloat) size {
+    self.cropViewMinimumBoxSize = size;
+}
 
 - (instancetype)initWithCroppingStyle:(TOCropViewCroppingStyle)style image:(UIImage *)image
 {
@@ -103,6 +125,9 @@ CGFloat titleLabelHeight;
     self.cropView.frame = [self frameForCropViewWithVerticalLayout:self.verticalLayout];
     self.toolbar.frame = [self frameForToolBarWithVerticalLayout:self.verticalLayout];
 
+    self.cropView.propTOCropViewMinimumBoxSize = self.cropViewMinimumBoxSize;
+    _cropView.propTOCropViewMinimumWidthOfSize = self.cropViewMinimumWidthOfSize;
+    
     // Perform the initial set up after the initial frame is set
     [self.cropView performInitialSetup];
 

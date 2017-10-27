@@ -110,17 +110,17 @@ typedef NS_ENUM(NSInteger, TOCropViewOverlayEdge) {
 
 /**
  Minimum width of cropped image in CGFloat to set the minimum in pixels. This is to limit the maximum zoom for the content to be cropped.
- We use this property to determine whether we're using the default constant value of kTOCropViewMinimumSize,
- otherwise we use the property setTOCropViewMinimumWidthOfSize if it's set.
+ We use the default constant value of kTOCropViewMinimumSize by default.
+ Otherwise we can set this property instead to override kTOCropViewMinimumSize.
  */
-@property (nonatomic, assign, readwrite) CGFloat propTOCropViewMinimumWidthOfSize;
+@property (nonatomic, assign, readwrite) CGFloat setTOCropViewMinimumWidthOfSize;
 
 /**
  Minimum cropping size of the box.
- We use this property to determine whether we're using the default constant value of kTOCropViewMinimumBoxSize,
- otherwise we use the property setTOCropViewMinimumBoxSize if it's set.
+ We use the default constant value of kTOCropViewMinimumBoxSize by default.
+ Otherwise we can set this property instead to override kTOCropViewMinimumBoxSize.
  */
-@property (nonatomic, assign, readwrite) CGFloat propTOCropViewMinimumBoxSize;
+@property (nonatomic, assign, readwrite) CGFloat setTOCropViewMinimumBoxSize;
 
 - (void)setup;
 
@@ -348,13 +348,8 @@ typedef NS_ENUM(NSInteger, TOCropViewOverlayEdge) {
     }
     
     // Configure the scroll view
-    if ([[UIScreen mainScreen] scale] == 2.0) {
-        self.tOCropViewMinimumSizePerRes = self.propTOCropViewMinimumWidthOfSize / [[UIScreen mainScreen] scale];
-    }
-    
-    if ([[UIScreen mainScreen] scale] == 3.0) {
-        self.tOCropViewMinimumSizePerRes = self.propTOCropViewMinimumWidthOfSize / [[UIScreen mainScreen] scale];
-    }
+    self.tOCropViewMinimumSizePerRes = self.propTOCropViewMinimumWidthOfSize / [[UIScreen mainScreen] scale];
+
     
     CGFloat maximumScale = floor(imageSize.width / self.tOCropViewMinimumSizePerRes);
     self.scrollView.minimumZoomScale = scale;

@@ -280,6 +280,9 @@ typedef NS_ENUM(NSInteger, TOCropViewControllerToolbarPosition) {
  */
 - (nonnull instancetype)initWithImage:(nonnull UIImage *)image NS_SWIFT_NAME(init(image:));
 
+- (void) setTOCropViewMinimumWidthOfSize:(CGFloat) size;
+- (void) setTOCropViewMinimumBoxSize:(CGFloat) size;
+
 /** 
  Creates a new instance of a crop view controller with the supplied image and cropping style
  
