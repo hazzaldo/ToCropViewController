@@ -28,7 +28,7 @@
 
 static const CGFloat kTOCropViewPadding = 14.0f;
 static const NSTimeInterval kTOCropTimerDuration = 0.8f;
-static const CGFloat kTOCropViewMinimumSize = 375.0f;
+static const CGFloat kTOCropViewMinimumWidthSize = 375.0f;
 static const CGFloat kTOCropViewMinimumBoxSize = 125.0f;
 static const CGFloat kTOCropViewCircularPathRadius = 300.0f;
 
@@ -107,6 +107,20 @@ typedef NS_ENUM(NSInteger, TOCropViewOverlayEdge) {
  values until the view is configured for the first time. */
 @property (nonatomic, assign) NSInteger restoreAngle;
 @property (nonatomic, assign) CGRect    restoreImageCropFrame;
+
+/**
+ Minimum width of cropped image in CGFloat to set the minimum in pixels. This is to limit the maximum zoom for the content to be cropped.
+ We use this property to determine whether we're using the default constant value of kTOCropViewMinimumSize,
+ otherwise we use the property setTOCropViewMinimumWidthOfSize if it's set.
+ */
+@property (nonatomic, assign, readwrite) CGFloat propTOCropViewMinimumWidthOfSize;
+
+/**
+ Minimum cropping size of the box.
+ We use this property to determine whether we're using the default constant value of kTOCropViewMinimumBoxSize,
+ otherwise we use the property setTOCropViewMinimumBoxSize if it's set.
+ */
+@property (nonatomic, assign, readwrite) CGFloat propTOCropViewMinimumBoxSize;
 
 - (void)setup;
 
@@ -321,13 +335,25 @@ typedef NS_ENUM(NSInteger, TOCropViewOverlayEdge) {
     //Whether aspect ratio, or original, the final image size we'll base the rest of the calculations off
     CGSize scaledSize = (CGSize){floorf(imageSize.width * scale), floorf(imageSize.height * scale)};
     
+    if (self.setTOCropViewMinimumWidthOfSize > 0){
+        self.propTOCropViewMinimumWidthOfSize = self.setTOCropViewMinimumWidthOfSize;
+    } else {
+        self.propTOCropViewMinimumWidthOfSize = kTOCropViewMinimumWidthSize;
+    }
+    
+    if (self.setTOCropViewMinimumBoxSize > 0){
+        self.propTOCropViewMinimumBoxSize = self.setTOCropViewMinimumBoxSize;
+    } else {
+        self.propTOCropViewMinimumBoxSize = kTOCropViewMinimumBoxSize;
+    }
+    
     // Configure the scroll view
     if ([[UIScreen mainScreen] scale] == 2.0) {
-        self.tOCropViewMinimumSizePerRes = kTOCropViewMinimumSize / [[UIScreen mainScreen] scale];
+        self.tOCropViewMinimumSizePerRes = self.propTOCropViewMinimumWidthOfSize / [[UIScreen mainScreen] scale];
     }
     
     if ([[UIScreen mainScreen] scale] == 3.0) {
-        self.tOCropViewMinimumSizePerRes = kTOCropViewMinimumSize / [[UIScreen mainScreen] scale];
+        self.tOCropViewMinimumSizePerRes = self.propTOCropViewMinimumWidthOfSize / [[UIScreen mainScreen] scale];
     }
     
     CGFloat maximumScale = floor(imageSize.width / self.tOCropViewMinimumSizePerRes);
@@ -626,18 +652,18 @@ typedef NS_ENUM(NSInteger, TOCropViewOverlayEdge) {
     }
     
     //The absolute max/min size the box may be in the bounds of the crop view
-    CGSize minSize = (CGSize){kTOCropViewMinimumBoxSize, kTOCropViewMinimumBoxSize};
+    CGSize minSize = (CGSize){self.propTOCropViewMinimumBoxSize, self.propTOCropViewMinimumBoxSize};
     CGSize maxSize = (CGSize){CGRectGetWidth(contentFrame), CGRectGetHeight(contentFrame)};
     
     //clamp the box to ensure it doesn't go beyond the bounds we've set
     if (self.aspectRatioLockEnabled && aspectHorizontal) {
         maxSize.height = contentFrame.size.width / aspectRatio;
-        minSize.width = kTOCropViewMinimumBoxSize * aspectRatio;
+        minSize.width = self.propTOCropViewMinimumBoxSize * aspectRatio;
     }
         
     if (self.aspectRatioLockEnabled && aspectVertical) {
         maxSize.width = contentFrame.size.height * aspectRatio;
-        minSize.height = kTOCropViewMinimumBoxSize / aspectRatio;
+        minSize.height = self.propTOCropViewMinimumBoxSize / aspectRatio;
     }
 
     // Clamp the width if it goes over
@@ -984,8 +1010,8 @@ typedef NS_ENUM(NSInteger, TOCropViewOverlayEdge) {
     cropBoxFrame.size.height = floorf(MIN(cropBoxFrame.size.height, maxHeight));
     
     //Make sure we can't make the crop box too small
-    cropBoxFrame.size.width  = MAX(cropBoxFrame.size.width, kTOCropViewMinimumBoxSize);
-    cropBoxFrame.size.height = MAX(cropBoxFrame.size.height, kTOCropViewMinimumBoxSize);
+    cropBoxFrame.size.width  = MAX(cropBoxFrame.size.width, self.propTOCropViewMinimumBoxSize);
+    cropBoxFrame.size.height = MAX(cropBoxFrame.size.height, self.propTOCropViewMinimumBoxSize);
     
     _cropBoxFrame = cropBoxFrame;
     
